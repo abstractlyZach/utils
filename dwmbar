@@ -1,4 +1,22 @@
-datetime=$(date "+%F %R")
-status="$(weather) | $datetime | $(battery)"
+delim="|"
 
-xsetroot -name "$status"
+status() {
+	echo "$(weather)"
+	echo "$delim"
+	
+	echo $(date "+%F %R")
+	echo "$delim"
+	
+	echo "$(battery)"
+}
+
+update_bar() {
+	xsetroot -name "$(status | tr '\n' ' ')" &
+	wait
+}
+
+while :; do
+	update_bar
+	sleep 10s &
+	wait
+done
