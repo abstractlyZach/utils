@@ -9,8 +9,9 @@ show_weather() {
 
 
 # send error messages for the stat command to /dev/null
-if [ "$(stat -c %y "$HOME/.local/share/weather_report" >/dev/null 2>&1 | awk '{print $1}')" != "$(date '+%F')" ]
+if [ "$(stat -c %y "$HOME/.local/share/weather_report" 2>&1 | awk '{print $1}')" != "$(date '+%F')" ]
 then
+	notify-send "Haven't checked weather in a day. Checking weather..."
 	update_weather && show_weather
 else
 	show_weather
