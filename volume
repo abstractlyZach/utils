@@ -1,0 +1,1 @@
+amixer -q set Master "$1"
