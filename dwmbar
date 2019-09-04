@@ -1,0 +1,4 @@
+datetime=$(date "+%F %R")
+status="$(weather) | $datetime | $(battery)"
+
+xsetroot -name "$status"

@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+# Give a battery name (e.g. BAT0) as an argument.
+
+battery_name="BAT0"
+
+capacity=$(cat /sys/class/power_supply/"$battery_name"/capacity) || exit
+
+echo "$capacity%"

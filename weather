@@ -1,0 +1,17 @@
+update_weather() {
+	# use silent mode so that we don't output connection information to the console
+	curl -s "wttr.in/?format=1" > "$HOME/.local/share/weather_report"
+}
+
+show_weather() {
+	cat "$HOME/.local/share/weather_report"
+}
+
+
+# send error messages for the stat command to /dev/null
+if [ "$(stat -c %y "$HOME/.local/share/weather_report" >/dev/null 2>&1 | awk '{print $1}')" != "$(date '+%F')" ]
+then
+	update_weather && show_weather
+else
+	show_weather
+fi
