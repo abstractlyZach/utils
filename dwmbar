@@ -1,6 +1,10 @@
 delim="|"
 
 status() {
+	# Get the volume of ALSA's master volume output.
+	amixer get Master | grep -o "[0-9]*%\|\[on\]\|\[off\]" | sed "s/\[on\]/unmuted/;s/\[off\]/muted/"
+	echo "$delim"
+
 	echo "$(weather)"
 	echo "$delim"
 	
@@ -17,6 +21,6 @@ update_bar() {
 
 while :; do
 	update_bar
-	sleep 10s &
+	sleep 60s &
 	wait
 done
