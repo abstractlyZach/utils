@@ -1,1 +1,1 @@
-nmcli d wifi connect $1 password $2
+nmcli d wifi connect "$1" password "$2"
