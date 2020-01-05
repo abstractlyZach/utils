@@ -10,7 +10,7 @@ status() {
 	echo "$(weather)"
 	echo "$delim"
 	
-	echo $(date "+%F %R")
+	echo $(date "+%a %F %R")
 	echo "$delim"
 	
 	echo "$(battery)"
