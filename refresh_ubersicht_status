@@ -1,0 +1,5 @@
+# Refresh the status widget (power, date, time, etc.)
+while true; do
+	osascript -e 'tell application id "tracesOf.Uebersicht" to refresh widget id "status-jsx"'
+	sleep 2
+done
