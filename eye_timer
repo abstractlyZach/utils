@@ -1,12 +1,16 @@
 #!/usr/bin/env sh
 
 # A notification script that helps you take care of your eyes with the 20-20-20 rule
-
-while sleep 20m
-do
+notify() {
 	terminal-notifier \
 		-message "rest your eyeballs!" \
 		-title "Eye Timer" \
 		-sound purr
+}
+
+
+notify
+while sleep 20m; do
+	notify
 done
 
