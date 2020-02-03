@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+# This script will compile or run another finishing operation on a document. I
+# have this script run via vim.
+#
+# Compiles .md files to pdf. Runs scripts based on extension or shebang
+
+file=$(readlink -f "$1")
+dir=$(dirname "$file")
+base="${file%.*}"
+
+cd "$dir" || exit
+
+case "$file" in
+	*\.md) pandoc "$file" -o "$base".pdf ;;
+	*\.py) python "$file" ;;
+	*) sed 1q "$file" | grep "^#!/" | sed "s/^#!//" | xargs -r -I % "$file" ;;
+esac
