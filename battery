@@ -5,4 +5,10 @@ battery_name="BAT0"
 
 capacity=$(cat /sys/class/power_supply/"$battery_name"/capacity) || exit
 
-echo "$capacity%"
+status=$(
+    cat /sys/class/power_supply/"$battery_name"/status |
+	sed 's/Discharging/battery/'
+) || exit
+
+
+echo "$capacity% $status"
