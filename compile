@@ -14,5 +14,6 @@ cd "$dir" || exit
 case "$file" in
 	*\.md) pandoc "$file" -o "$base".pdf ;;
 	*\.py) python "$file" ;;
+	*\.java) java "$file" ;;
 	*) sed 1q "$file" | grep "^#!/" | sed "s/^#!//" | xargs -r -I % "$file" ;;
 esac
