@@ -7,4 +7,4 @@
 # if you don't want a black screen.
 
 [ ! -z "$1" ] && cp "$1" ~/.config/wall.png && notify-send -i "$HOME/.config/wall.png" "Wallpaper changed."
-feh --bg-max ~/.config/wall.png
+feh --bg-max --no-fehbg ~/.config/wall.png
