@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# This script is called on startup to remap keys.
+setxkbmap -option caps:escape

@@ -1,0 +1,5 @@
+#! /bin/sh
+# print out the date and time
+
+date "+%F (%a) %T"
+
