@@ -1,3 +1,5 @@
+#!/bin/sh
+
 update_weather() {
 	# use silent mode so that we don't output connection information to the console
 	curl -s "wttr.in/?format=1" > "$HOME/.local/share/weather_report"
@@ -6,6 +8,10 @@ update_weather() {
 show_weather() {
 	cat "$HOME/.local/share/weather_report"
 }
+
+case $BLOCK_BUTTON in
+	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
 
 
 # send error messages for the stat command to /dev/null

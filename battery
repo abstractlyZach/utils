@@ -3,6 +3,11 @@
 
 battery_name="BAT0"
 
+case $BLOCK_BUTTON in
+	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+
 capacity=$(cat /sys/class/power_supply/"$battery_name"/capacity) || exit
 
 status=$(
