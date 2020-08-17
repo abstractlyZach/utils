@@ -1,0 +1,14 @@
+#!zsh
+
+# A simple bookmark manager for dmenu
+
+# Opens up a bookmark file, displays options in dmenu, then opens up the 
+# selection in the browser.
+
+url=$(
+    column -s, -t $XDG_CONFIG_HOME/bookmarks.txt\
+    | dmenu -i -l 20 \
+    | rev | cut -f1 -d\  | rev
+)
+
+[ -n "$url" ] && $BROWSER --new-window "$url"
