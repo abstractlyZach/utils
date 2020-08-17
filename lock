@@ -1,0 +1,4 @@
+#! zsh
+
+# lock the screen
+slock -m "$(cowsay "$(fortune)")"
