@@ -7,7 +7,8 @@ xclip -h 2> /dev/null || exit # --help flag goes to stderr for some reason
 
 emoji_list="$HOME/.config/emoji"
 
-chosen_entry=$(grep -v "#" "$emoji_list" | dmenu -i -l 20 -fn Monospace-18)
+chosen_entry=$(grep -v "#" "$emoji_list" \
+    | dmenu -i -l 20 -fn Monospace-18 -p "emoji:")
 
 [ "$chosen_entry" != "" ] || exit
 

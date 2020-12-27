@@ -7,7 +7,7 @@
 
 url=$(
     column -s, -t $XDG_CONFIG_HOME/bookmarks.txt\
-    | dmenu -i -l 20 \
+    | dmenu -i -l 20 -c -p "browser:" \
     | rev | cut -f1 -d\  | rev
 )
 
