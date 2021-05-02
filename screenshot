@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# use a floating terminal to prompt the user to take a screenshot
+floating-terminal screenshot-cmd
