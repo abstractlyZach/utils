@@ -32,6 +32,7 @@ So, I will compose my own `dmenu` using nothing but a terminal, fzf, and shell c
 ## building the floating-terminal script
 ### tools I use
 If you'd like to follow along, these are the programs you'll need to have installed. If not, that's ok, but it's helpful to have a basic one-line understanding of what they each do.
+* a Unix-like system. If you don't know what that means, Mac OSX or [Windows Subshell](https://docs.microsoft.com/en-us/windows/wsl/install-win10) should work just fine 
 * sway
 * grim
 * slurp
@@ -40,6 +41,7 @@ If you'd like to follow along, these are the programs you'll need to have instal
 * notifylib
 * mako
 * cat
+
 #todo: include descriptions and links here
 
 ### the driving script
