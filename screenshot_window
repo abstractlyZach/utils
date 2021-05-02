@@ -1,0 +1,15 @@
+#/bin/sh
+
+# Select a window using the mouse and take a screenshot of it
+
+set -e
+
+# Use slurp to get the borders of a window
+window_borders=$(\
+    swaymsg -t get_tree \
+    | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' \
+    | slurp
+)
+
+grim -g "${window_borders}" -c
+notify-send --expire-time=2500 "grim" "💻 Screenshot captured!"
