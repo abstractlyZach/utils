@@ -49,7 +49,7 @@ The actual commands in the `case` statement are unimportant; all you need to kno
 Also I use [notify-send](https://github.com/GNOME/libnotify) (with [mako](https://github.com/emersion/mako) in the background) to give the user notifications so that there's some visual feedback that things are working.
 
 Here's the script:
-```
+```sh
 # ~/bin/screenshot-cmd
 
 # prompt the user to select a screenshot mode then perform the screenshot in the given mode
@@ -91,7 +91,7 @@ This script works well, but it requires an interactive terminal for `fzf` to wor
 ### sway configuration
 I have a rule set for sway that will automatically set any window to "floating" mode if its name starts with "!". This means that it will be displayed on top of other windows and won't be manipulated by any of the tiling constraints.
 
-```
+```sh
 # ~/.config/sway/config
 
 ...
@@ -101,14 +101,14 @@ for_window [title="^!.*$"] floating enable, border pixel 5
 ```
 
 ### first draft
-```
+```sh
 # ~/bin/floating-terminal
 
 # open a floating window and run the script given as an argument
 alacritty --title '!terminal' -e sh -c "${1}"
 ```
 
-```
+```sh
 # ~/bin/screenshot
 
 # use a floating terminal to prompt the user to take a screenshot
@@ -137,7 +137,7 @@ If I can truly emulate `dmenu` by returning result of fzf, my problems would be 
 
 This would be the final script (only line 10 changed):
 
-```
+```sh
 #!/bin/sh
 
 # prompt the user to select a screenshot mode then perform the screenshot in the given mode
@@ -179,7 +179,7 @@ Ultimately, we need to get the output of `fzf` and somehow write it to `Alacritt
 ### research and available tools
 #### process substitution
 [Process substitution](https://www.gnu.org/software/bash/manual/html_node/Process-Substitution.html) (AKA "anonymous pipe") seems promising. It writes a process's output as a filename and returns it to the parent process for reading. So in my head, this should be what we're looking for:
-```
+```sh
 # ~/bin/floating-terminal
 
 # open a floating window and run the script given as an argument
