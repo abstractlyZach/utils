@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# open a floating window and run the script given as an argument
+alacritty --title '!' -e sh -c "${1}"
