@@ -25,6 +25,8 @@ cat </dev/stdin >"${fzf_input}"
 # read fzf's output and cat it to stdout
 cat < "${fzf_output}"
 
+# TODO: catch and propagate fzf errors
+
 # clean up fifos
 rm "${fzf_output}"
 rm "${fzf_input}"
