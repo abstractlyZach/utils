@@ -1,4 +1,49 @@
 #!/bin/sh
 
-# use a floating terminal to prompt the user to take a screenshot
-floating-terminal screenshot-cmd
+# prompt the user to select a screenshot type then do that screenshot
+
+set -e
+
+notify_interactive_mode () {
+    notify-send "Screenshot 💻" "Screenshotting in \"${1}\" mode" --expire-time=1000
+}
+
+notify_selection_cancelled () {
+    notify-send "Screenshot 🙅‍♀️" "Selection cancelled" --expire-time=2500
+}
+
+screenshot_options=(screen window selection)
+screenshot_type=$(\
+    echo ${screenshot_options[*]} \
+        | tr "[:space:]" '\n' \
+        | floating-fzf \
+    || notify-send "Screenshot 🤷‍♂️" "No screenshot mode chosen" --expire-time=2500
+)
+
+case "$screenshot_type" in
+    "screen")
+        grim -c
+        ;;
+    "selection")
+        notify_interactive_mode "selection"
+        selection_boundaries=$(slurp || notify_selection_cancelled)
+        grim -g "${selection}" -c
+        ;;
+    "window")
+        notify_interactive_mode "window"
+        # Use slurp to get the borders of a window
+        window_borders=$(\
+            swaymsg -t get_tree \
+                | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' \
+                | slurp \
+            || notify_selection_cancelled
+        )
+        grim -g "${window_borders}" -c
+        ;;
+    *)
+        exit 1
+        ;;
+esac
+
+notify-send --expire-time=2500 "Screenshot 👍" "Screenshot captured!"
+
