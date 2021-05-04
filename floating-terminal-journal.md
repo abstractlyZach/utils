@@ -206,6 +206,39 @@ could come up is a cornerstone of good engineering, and it's why experienced
 battle-hardened engineers are so darn great and wise, so I still think it's good 
 to consider this issue for the future.
 
+Here's what I wrote using a FIFO, and it worked! I learned a lot about [FIFOs](https://www.networkworld.com/article/3251853/why-use-named-pipes-on-linux.html) in the shell through this, so I may do a write-up on it some other time.
+```sh
+# ~/bin/floating-fzf
+
+# open a floating fzf window and return the result dmenu-style
+
+# raise an error if stdin is empty
+if test -t 0; then
+    echo "You must provide options to choose from via stdin" >&2
+    exit 1
+fi
+
+# open fifos so that we can write to and read from fzf inside the Alacritty process
+fzf_input="/tmp/fzf_input"
+fzf_output="/tmp/fzf_output"
+mkfifo "${fzf_input}"
+mkfifo "${fzf_output}"
+
+# disown the process so that alacritty can do its own thing
+# if we don't do this, alacritty will have a blocked pipe because
+# it'll be waiting for the command below to read and clear the output
+alacritty --title '!' -e sh -c "fzf <${fzf_input} >${fzf_output}" & disown
+
+# read floating-fzf's stdin and write it to the input fifo
+cat </dev/stdin >"${fzf_input}"
+
+# read fzf's output and cat it to stdout
+cat < "${fzf_output}"
+
+# clean up fifos
+rm "${fzf_output}"
+rm "${fzf_input}"
+```
 
 ## Footnotes
 for more reading on stdout and stderr, read this
