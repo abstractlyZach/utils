@@ -12,5 +12,5 @@ chosen_entry=$(grep -v "#" "$emoji_list" | fzf --reverse)
 [ "$chosen_entry" != "" ] || exit
 
 chosen_emoji=$(echo "$chosen_entry" | sed "s/ .*//")
-echo "$chosen_emoji" | tr -d '\n' | pbcopy
-terminal-notifier -message "$chosen_emoji copied to clipboard" -title "Emoji!"
+echo "$chosen_emoji" | tr -d '\n' | wl-copy
+notify-send "$chosen_emoji copied to clipboard" --category "Emoji!" --expire-time=1500
