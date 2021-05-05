@@ -69,15 +69,11 @@ num_windows=$( \
 case "${1}" in
     "west")
         echo "going west"
-        if [[ "${current_window_index}" -gt 0 ]]; then
-            (( current_window_index-- ))
-        fi
+        [[ "${current_window_index}" -gt 0 ]] && (( current_window_index-- ))
         ;;
     "east")
         echo "going east"
-        if [[ "${current_window_index}" -lt "${num_windows}" ]]; then
-            (( current_window_index++ ))
-        fi
+        [[ "${current_window_index}" -lt "${num_windows}" ]] && (( current_window_index++ ))
         ;;
     *)
         echo "woops can't do \"${1}\"" >&2
