@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# everything in this file uses 1-based indexing since that's how grep counts lines
+
+if [ -z "${1}" ]; then
+    echo "argument required" >&2
+    exit 1
+fi
+
+current_space=$(yabai -m query --spaces \
+    | jq '.[]
+        | select(.focused == 1)
+        | .index'
+)
+
+ids_left_to_right=$(yabai -m query --windows --space "${current_space}" \
+    | jq '[.[] | {id: .id, app: .app, left_x: .frame.x}]
+        | sort_by(.left_x)
+        | .[]
+        | .id'
+)
+
+current_window_id=$(yabai -m query --windows  | jq '.[] | select(.focused == 1) | .id')
+current_window_index=$(echo "${ids_left_to_right}" | grep --line-number "${current_window_id}" | cut -f 1 -d :)
+num_windows=$(echo "${ids_left_to_right}" | wc -l)
+case "${1}" in
+    "east")
+        echo "going east"
+        if [[ "${current_window_index}" -lt "${num_windows}" ]]; then
+            (( current_window_index++ ))
+        fi
+        ;;
+    "west")
+        echo "going west"
+        if [[ "${current_window_index}" -gt 0 ]]; then
+            (( current_window_index-- ))
+        fi
+        ;;
+    *)
+        echo "woops can't do \"${1}\"" >&2
+        exit 1
+        ;;
+esac
+
+window_to_focus=$(echo "${ids_left_to_right}" | sed "${current_window_index}q;d")
+yabai -m window --focus "${window_to_focus}"
