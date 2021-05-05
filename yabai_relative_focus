@@ -68,17 +68,12 @@ num_windows=$( \
 # don't change the current window if we're as far east or west as we can go
 case "${1}" in
     "west")
-        echo "going west"
-        [[ "${current_window_index}" -gt 0 ]] && (( current_window_index-- ))
-        ;;
+        [[ "${current_window_index}" -gt 0 ]] && (( current_window_index-- ));;
     "east")
-        echo "going east"
-        [[ "${current_window_index}" -lt "${num_windows}" ]] && (( current_window_index++ ))
-        ;;
+        [[ "${current_window_index}" -lt "${num_windows}" ]] && (( current_window_index++ ));;
     *)
         echo "woops can't do \"${1}\"" >&2
-        exit 1
-        ;;
+        exit 1;;
 esac
 
 # the sed command looks at every line and asks "is it $current_window_index ?"
