@@ -1,0 +1,95 @@
+#!/bin/sh
+
+# in yabai, focus the window relative to the current one in a given direction
+
+# There are 2 types of layouts: binary space partition (bsp) and floating. BSP Windows
+# are considered "managed" and floating windows are considered "unmanaged".
+#
+# this script is necessary because the `yabai -m window --focus ...` command only
+# works on "managed windows", but I use "unmanaged windows". The reason for that is that
+# I want to split my screen # into 3 panels with a 25-50-25 ratio, but that's not possible
+# through bsp. the first split # of the bsp tree is always 50-50 so there's no configuration of
+# opening and closing windows that I could do to achieve 25-50-25. so, I must use a floating
+# layout and I need a way of switching between windows
+#
+# Eventually, I imagine I would wait for someone to create a "centered bsp" mode in yabai's
+# source code or I would create it myself.
+
+# This script is slightly slower than the normal `yabai -m window --focus {east,west}` command :(
+# Everything in this script uses 1-based indexing since that's how grep counts lines
+
+if [ -z "${1}" ]; then
+    echo "argument required" >&2
+    exit 1
+fi
+
+current_space=$( \
+    yabai -m query --spaces \
+    | jq '.[]
+        | select(.focused == 1)
+        | .index'
+)
+
+# we use an intermediate array so that this command is easier to debug.
+# it lets us read the name of the applications running in each window
+window_ids_left_to_right=$( \
+    yabai -m query --windows --space "${current_space}" \
+    | jq '
+        [.[]
+            | {
+                id: .id,
+                app: .app,
+                left_x: .frame.x
+            }
+        ]
+        | sort_by(.left_x)
+        | unique_by(.left_x)
+        | .[]
+        | .id'
+)
+
+current_window_id=$( \
+    yabai -m query --windows \
+    | jq '.[]
+        | select(.focused == 1)
+        | .id'
+)
+
+current_window_index=$( \
+    echo "${window_ids_left_to_right}" \
+    | grep --line-number "${current_window_id}" \
+    | cut -f 1 -d ":"
+)
+
+num_windows=$( \
+    echo "${window_ids_left_to_right}" \
+    | wc -l
+)
+
+# don't change the current window if we're as far east or west as we can go
+case "${1}" in
+    "west")
+        [[ "${current_window_index}" -gt 0 ]] \
+            && (( current_window_index-- ))
+    ;;
+
+    "east")
+        [[ "${current_window_index}" -lt "${num_windows}" ]] \
+            && (( current_window_index++ ))
+    ;;
+
+    *)
+        echo "woops can't do \"${1}\"" >&2
+        exit 1
+    ;;
+esac
+
+# the sed command looks at every line and asks "is it $current_window_index ?"
+# if it's not, then it deletes the line from the stream
+# if it is, it prints the line and immediately quits and closes the pipe
+window_id_to_focus=$( \
+    echo "${window_ids_left_to_right}" \
+    | sed "${current_window_index}q;d"
+)
+
+yabai -m window --focus "${window_id_to_focus}"
