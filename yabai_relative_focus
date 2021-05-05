@@ -65,17 +65,18 @@ num_windows=$( \
     | wc -l
 )
 
+# don't change the current window if we're as far east or west as we can go
 case "${1}" in
-    "east")
-        echo "going east"
-        if [[ "${current_window_index}" -lt "${num_windows}" ]]; then
-            (( current_window_index++ ))
-        fi
-        ;;
     "west")
         echo "going west"
         if [[ "${current_window_index}" -gt 0 ]]; then
             (( current_window_index-- ))
+        fi
+        ;;
+    "east")
+        echo "going east"
+        if [[ "${current_window_index}" -lt "${num_windows}" ]]; then
+            (( current_window_index++ ))
         fi
         ;;
     *)
