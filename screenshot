@@ -12,7 +12,13 @@ notify_selection_cancelled () {
     notify-send "Screenshot 🙅‍♀️" "Selection cancelled" --expire-time=2500
 }
 
-screenshot_options=(screen window selection)
+screenshot_options=(
+   "screen"
+   "screen-with-cursor"
+   "window"
+   "selection"
+)
+
 screenshot_type=$(\
     echo ${screenshot_options[*]} \
         | tr "[:space:]" '\n' \
@@ -22,12 +28,15 @@ screenshot_type=$(\
 
 case "$screenshot_type" in
     "screen")
+        grim
+        ;;
+    "screen-with-cursor")
         grim -c
         ;;
     "selection")
         notify_interactive_mode "selection"
         selection_boundaries=$(slurp || notify_selection_cancelled)
-        grim -g "${selection}" -c
+        grim -g "${selection}"
         ;;
     "window")
         notify_interactive_mode "window"
@@ -38,9 +47,10 @@ case "$screenshot_type" in
                 | slurp \
             || notify_selection_cancelled
         )
-        grim -g "${window_borders}" -c
+        grim -g "${window_borders}"
         ;;
     *)
+        notify-send "Screenshot 🤷‍♂️" "Unrecognized mode: ${screenshot_type}" --expire-time=2500
         exit 1
         ;;
 esac
