@@ -11,8 +11,16 @@ fi
 # open fifos so that we can write to and read from fzf inside the Alacritty process
 fzf_input="/tmp/fzf_input"
 fzf_output="/tmp/fzf_output"
+
+cleanup () {
+    rm "${fzf_output}"
+    rm "${fzf_input}"
+}
+
+# create the fifos and be ready to clean them up when we exit
 mkfifo "${fzf_input}"
 mkfifo "${fzf_output}"
+trap cleanup EXIT
 
 # disown the process so that alacritty can do its own thing
 # if we don't do this, alacritty will have a blocked pipe because
@@ -22,11 +30,11 @@ alacritty --title '!' -e sh -c "fzf <${fzf_input} >${fzf_output}" & disown
 # read floating-fzf's stdin and write it to the input fifo
 cat </dev/stdin >"${fzf_input}"
 
-# read fzf's output and cat it to stdout
-cat < "${fzf_output}"
+fzf_selection=$(cat < "${fzf_output}")
 
-# TODO: catch and propagate fzf errors
+if [[ -z "${fzf_selection}" ]]; then
+    echo "no fzf selection was made" >&2
+    exit 130
+fi
 
-# clean up fifos
-rm "${fzf_output}"
-rm "${fzf_input}"
+echo "${fzf_selection}"
