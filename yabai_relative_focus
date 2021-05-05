@@ -43,6 +43,7 @@ window_ids_left_to_right=$( \
             }
         ]
         | sort_by(.left_x)
+        | unique_by(.left_x)
         | .[]
         | .id'
 )
