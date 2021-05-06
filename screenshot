@@ -2,8 +2,6 @@
 
 # prompt the user to select a screenshot type then do that screenshot
 
-set -e
-
 notify_interactive_mode () {
     notify-send "Screenshot 💻" "Screenshotting in \"${1}\" mode" --expire-time=1000
 }
@@ -22,9 +20,14 @@ screenshot_options=(
 screenshot_type=$(\
     echo ${screenshot_options[*]} \
         | tr "[:space:]" '\n' \
-        | floating-fzf \
-    || notify-send "Screenshot 🤷‍♂️" "No screenshot mode chosen" --expire-time=2500
+        | floating-fzf
 )
+
+if [ $? -ne 0 ]; then
+    notify-send "Screenshot 🤷‍♂️" "No screenshot mode chosen" --expire-time=2500
+    exit 1
+fi
+
 
 case "$screenshot_type" in
     "screen")
@@ -35,8 +38,12 @@ case "$screenshot_type" in
         ;;
     "selection")
         notify_interactive_mode "selection"
-        selection_boundaries=$(slurp || notify_selection_cancelled)
-        grim -g "${selection}"
+        selection_rectangle=$(slurp)
+        if [ $? -ne 0 ]; then
+            notify_selection_cancelled
+            exit 1
+        fi
+        grim -g "${selection_rectangle}"
         ;;
     "window")
         notify_interactive_mode "window"
@@ -44,9 +51,12 @@ case "$screenshot_type" in
         window_borders=$(\
             swaymsg -t get_tree \
                 | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' \
-                | slurp \
-            || notify_selection_cancelled
+                | slurp
         )
+        if [ $? -ne 0 ]; then
+            notify_selection_cancelled
+            exit 1
+        fi
         grim -g "${window_borders}"
         ;;
     *)
