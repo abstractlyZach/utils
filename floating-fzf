@@ -10,6 +10,7 @@ fi
 
 # resize the floating window so that it's not too big or too small
 resize_command="swaymsg resize set 500 500"
+
 # open fifos so that we can write to and read from fzf inside the Alacritty process
 fzf_input="/tmp/fzf_input"
 fzf_output="/tmp/fzf_output"
@@ -35,6 +36,16 @@ cat </dev/stdin >"${fzf_input}"
 
 fzf_selection=$(cat < "${fzf_output}")
 
+# ideally, I'd like to write fzf's stderr to this script's stderr
+# and exit using fzf's exit code, but there's a few complications.
+# 1. Alacritty doesn't support custom exit codes. It's entirely up
+#   to the Alacritty devs on how it exits
+#   https://github.com/alacritty/alacritty/issues/5055
+# 2. fzf bugs out when I pipe its stderr to anything. Maybe it uses
+#   stderr to do the interactive selection?
+#
+# This if-block allows us to work around this by just checking
+# if we made a selection.
 if [[ -z "${fzf_selection}" ]]; then
     echo "no fzf selection was made" >&2
     exit 130
