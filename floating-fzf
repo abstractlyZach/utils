@@ -8,6 +8,8 @@ if test -t 0; then
     exit 1
 fi
 
+# resize the floating window so that it's not too big or too small
+resize_command="swaymsg resize set 500 500"
 # open fifos so that we can write to and read from fzf inside the Alacritty process
 fzf_input="/tmp/fzf_input"
 fzf_output="/tmp/fzf_output"
@@ -25,7 +27,8 @@ trap cleanup EXIT
 # disown the process so that alacritty can do its own thing
 # if we don't do this, alacritty will have a blocked pipe because
 # it'll be waiting for the command below to read and clear the output
-alacritty --title '!' -e sh -c "fzf <${fzf_input} >${fzf_output}" & disown
+alacritty --title '!floating-fzf' -e sh \
+    -c "${resize_command}; fzf <${fzf_input} >${fzf_output}" & disown
 
 # read floating-fzf's stdin and write it to the input fifo
 cat </dev/stdin >"${fzf_input}"
