@@ -25,6 +25,8 @@ mkfifo "${fzf_input}"
 mkfifo "${fzf_output}"
 trap cleanup EXIT
 
+# TODO: pass args into fzf so user can do stuff like specify the preview and size etc.
+
 # disown the process so that alacritty can do its own thing
 # if we don't do this, alacritty will have a blocked pipe because
 # it'll be waiting for the command below to read and clear the output

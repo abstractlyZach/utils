@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Open files using floating fzf.
+#
+
+# – fzf (https://github.com/junegunn/fzf)
+# – bat (https://github.com/sharkdp/bat)
+
+fd \
+| floating-fzf \
+    --preview 'bat --style=numbers --color=always --line-range :500 {}' \
+    --header='Select a file to open' \
+    --prompt='(f)>' \
+|
+
+# Open files
+while read file; do
+  kcr edit "$file"
+done
