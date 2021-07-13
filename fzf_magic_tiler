@@ -3,7 +3,8 @@
 PYTHON="python"
 IDE="magic-tiler-ide"
 
-selection=$(echo "${PYTHON}\n${IDE}" | floating-fzf)
 
 cd $HOME/workspace/abstractlyZach/magic-tiler
-poetry run magic-tiler -vv "${selection}" 2> $HOME/magic-tiler.log 1> $HOME/magic-tiler.log
+
+selection=$(poetry run magic-tiler list-layouts | floating-fzf)
+poetry run magic-tiler -vv open "${selection}" 2> $HOME/magic-tiler.log 1> $HOME/magic-tiler.log
