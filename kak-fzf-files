@@ -6,7 +6,7 @@
 # – fzf (https://github.com/junegunn/fzf)
 # – bat (https://github.com/sharkdp/bat)
 
-fd --type file\
+fd --type file --hidden \
 | floating-fzf \
     --preview 'bat --style=numbers --color=always --line-range :500 {}' \
     --header='Select a file to open' \
