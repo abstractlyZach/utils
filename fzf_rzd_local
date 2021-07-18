@@ -1,0 +1,6 @@
+#!/bin/zsh
+
+cd $HOME/workspace/abstractlyZach/reZIDE/
+
+selection=$(poetry run rzd list-layouts | floating-fzf)
+poetry run rzd -vv open "${selection}" 2> $HOME/rzd.log 1> $HOME/rzd.log

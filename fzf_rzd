@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+selection=$(rzd list-layouts | floating-fzf)
+rzd -vv open "${selection}" 2> $HOME/rzd.log 1> $HOME/rzd.log
