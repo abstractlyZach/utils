@@ -1,16 +1,15 @@
 #!/usr/bin/env sh
-# Give dmenu list of all unicode characters to copy.
+# fuzzy-find all emoji characters and then copy it to the clipboard
 # Shows the selected character in dunst if running.
-
-# Must have xclip installed to show menu
-xclip -h 2> /dev/null || exit # --help flag goes to stderr for some reason
 
 emoji_list="$HOME/.config/emoji"
 
-chosen_entry=$(grep -v "#" "$emoji_list" | fzf --reverse)
+# exit if we don't have a clipboard installed
+which "$CLIPBOARD" >/dev/null || exit
 
+chosen_entry=$(grep -v "#" "$emoji_list" | floating-fzf)
 [ "$chosen_entry" != "" ] || exit
 
 chosen_emoji=$(echo "$chosen_entry" | sed "s/ .*//")
-echo "$chosen_emoji" | tr -d '\n' | wl-copy
+echo "$chosen_emoji" | tr -d '\n' | "$CLIPBOARD"
 notify-send "$chosen_emoji copied to clipboard" --category "Emoji!" --expire-time=1500
