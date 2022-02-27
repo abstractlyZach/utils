@@ -1,0 +1,4 @@
+#!zsh
+
+# list all executables on the PATH
+whence -pm '*' | xargs basename -a | sort -u 
