@@ -8,9 +8,6 @@ if test -t 0; then
     exit 1
 fi
 
-# resize the floating window so that it's not too big or too small
-resize_command="swaymsg resize set 500 500"
-
 # open fifos so that we can write to and read from fzf inside the Alacritty process
 fzf_input="/tmp/fzf_input"
 fzf_output="/tmp/fzf_output"
@@ -25,14 +22,22 @@ mkfifo "${fzf_input}"
 mkfifo "${fzf_output}"
 trap cleanup EXIT
 
-# TODO: pass args into fzf so user can do stuff like specify the preview and size etc.
 
-# disown the process so that alacritty can do its own thing
-# if we don't do this, alacritty will have a blocked pipe because
+# having trouble implementing argument passthrough. Turns out it's really hard
+# when you have to pass it through and extra layer of quotes
+# https://stackoverflow.com/questions/1668649/how-to-keep-quotes-in-bash-arguments
+#
+# fzf_args=()
+# for i in "$@"; do
+#     fzf_args+=("$i")  # Need quotes here to append as a single array element.
+# done
+# echo "fzf ${fzf_args[@]} <${fzf_input} >${fzf_output}"
+
+# disown the process so that foot can do its own thing
+# if we don't do this, foot will have a blocked pipe because
 # it'll be waiting for the command below to read and clear the output
-alacritty --title '!floating-fzf' \
-    -e sh \
-    -c "${resize_command}; fzf <${fzf_input} >${fzf_output}" \
+foot --log-level=none --title='!floating-fzf' \
+    zsh -c "fzf <${fzf_input} >${fzf_output}" \
     & disown
 
 # read floating-fzf's stdin and write it to the input fifo
