@@ -9,12 +9,14 @@ if test -t 0; then
 fi
 
 # open fifos so that we can write to and read from fzf inside the Alacritty process
-fzf_input="/tmp/fzf_input"
-fzf_output="/tmp/fzf_output"
+temp_dir=$(mktemp --directory)
+fzf_input="${temp_dir}/fzf_input"
+fzf_output="${temp_dir}/fzf_output"
 
 cleanup () {
     rm "${fzf_output}"
     rm "${fzf_input}"
+    rmdir "${temp_dir}"
 }
 
 # create the fifos and be ready to clean them up when we exit
