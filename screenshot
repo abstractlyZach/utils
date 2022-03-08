@@ -65,4 +65,4 @@ case "$screenshot_type" in
         ;;
 esac
 
-notify-send --expire-time=2500 "Screenshot 👍" "Screenshot captured!"
+notify-send --expire-time=2500 "Screenshot 👍" "Screenshot captured!" --category=screenshot
