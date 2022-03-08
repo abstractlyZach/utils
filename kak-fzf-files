@@ -6,6 +6,11 @@
 # – fzf (https://github.com/junegunn/fzf)
 # – bat (https://github.com/sharkdp/bat)
 
+if [ ! -d .git ]; then
+    notify-send "kak-fzf-files: this is not a git directory" --expire-time=1000
+    exit 1
+fi
+
 $FZF_DEFAULT_COMMAND \
 | floating-fzf \
     --preview 'bat --style=numbers --color=always --line-range :500 {}' \
